@@ -1,14 +1,11 @@
 from __future__ import unicode_literals
-import email
-from enum import unique
-
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.forms import EmailField
 from django.utils.translation import gettext_lazy as _
 
 from .managers import UserManager
+from django.utils import timezone
 
 # Create your models here.
 class User(AbstractBaseUser, PermissionsMixin):
@@ -26,8 +23,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    objects = UserManager()
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone']
 
@@ -38,3 +33,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self) -> str:
         return self.email
+
+class Otp(models.Model):
+    code = models.CharField(max_length=6)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    expiry_date = models.DateTimeField()
+
+    def __str__(self) -> str:
+        return f"{self.code} >>> {self.user.email}"
+
+    def is_expired(self):
+        return timezone.now() > self.expiry_date  
+
+class Forgot(models.Model):
+    email_forgot = models.EmailField(_('email address'))        
+
