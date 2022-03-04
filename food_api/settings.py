@@ -35,6 +35,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'accounts',
+    'vendors',
+    'customers',
     'rest_framework',
     'drf_yasg',
     'coreapi',
