@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'accounts',
     'vendors',
-    'customers',
+    'customers.apps.CustomersConfig',
     'rest_framework',
     'drf_yasg',
     'coreapi',

@@ -39,11 +39,12 @@ def food_view(request):
             description = serializer.validated_data['description']    
             category = serializer.validated_data['category']    
             price = serializer.validated_data['price']       
-            food = Food.objects.create(title=title,description=description,category=category,price=price,user=user)           
-            new_serializer=FoodSerializer(food) 
             check = Food.objects.filter(title=title,description=description,category=category,price=price,user=user)           
             if check.exists():
                 raise PermissionDenied(detail={"message":"You already have this item"})
+            food = Food.objects.create(title=title,description=description,category=category,price=price,user=user)           
+            new_serializer=FoodSerializer(food) 
+            
             Menu.objects.create(food=food,user=user)
             data = {
                 'message' : 'success',

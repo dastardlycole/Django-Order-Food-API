@@ -1,0 +1,118 @@
+
+init_dir = input("Enter the x coordinate, the y coordinate and a direcction(N,E,S,W) separated by a space\n")
+
+
+pos = init_dir.split()
+dir= pos[2]
+del pos[2]
+
+pos[0]=int(pos[0])
+pos[1]=int(pos[1])
+
+pos_list=[]
+ob_comm=input("Enter the number of obstacles then the number of commands separated by a space")
+ob_comm=ob_comm.split()
+print(ob_comm)
+number_of_obstacles=int(ob_comm[0])
+num_of_commands=int(ob_comm[1])
+
+obstacles_list=[]
+for obstacle in range(number_of_obstacles):
+    ob_tuple=input(f"Enter the x coordinate and y coordinate of obstacle {obstacle+1}")
+    ob_tuple = (ob_tuple.split())
+    ob_tuple[0]=int(ob_tuple[0])
+    ob_tuple[1]=int(ob_tuple[1])
+    # ob_tuple=t(ob_tuple)
+    obstacles_list.append(ob_tuple)
+    print(obstacles_list)
+
+command_list=[]
+pos_tup=list(pos)
+for command in range(num_of_commands):
+    comm_tuple=input(f"Enter M followed by a number of steps or L or R")
+    comm_tuple = (comm_tuple.split())
+    if comm_tuple[0] == 'M' or comm_tuple[0]=='m':
+        comm_tuple[1]=int(comm_tuple[1])
+        pos_tup=list(pos_tup)
+        before=pos_tup.copy()
+        if dir=='N':
+            
+            pos_tup[1]=pos_tup[1]+comm_tuple[1]
+            
+            for i in obstacles_list:
+                if before[0]==i[0]:
+                    if before[1] < i[1] and pos_tup[1]>=i[1]:
+                        pos_tup = i.copy()
+                        pos_tup[1]=pos_tup[1]-1
+                    
+
+                    
+        elif dir=='W':
+            
+            pos_tup[0]=pos_tup[0]-comm_tuple[1]
+
+            for i in obstacles_list:
+                if before[1]==i[1]:
+                    if before[0] > i[0] and pos_tup[0]<=i[0]:
+                        pos_tup = i.copy()
+                        pos_tup[0]=pos_tup[0]+1
+            
+            
+        elif dir=='S':
+            
+            pos_tup[1]=pos_tup[1]-comm_tuple[1]   
+
+            for i in obstacles_list:
+                if before[0]==i[0]:
+                    if before[1] > i[1] and pos_tup[1]<=i[1]:
+                        pos_tup = i.copy()
+                        pos_tup[1]=pos_tup[1]+1 
+          
+        elif dir =='E':
+            
+            pos_tup[0]=pos_tup[0]+comm_tuple[1]  
+
+            for i in obstacles_list:
+                if before[1]==i[1]:
+                    if before[0] < i[0] and pos_tup[0]>=i[0]:
+                        pos_tup = i.copy()
+                        pos_tup[0]=pos_tup[0]-1 
+           
+                
+
+    elif comm_tuple[0]== 'L':
+        if dir == 'N':
+            dir="W"
+        elif dir == "W":
+            dir="S"
+        elif dir == "S":
+            dir="E"
+        elif dir == "E":
+            dir = "N"
+            
+    elif comm_tuple[0]== 'R':
+        if dir =='N':
+            dir="E"
+        elif dir=="E":
+            dir="S"
+        elif dir=="S":
+            dir="W"
+        elif dir == "W":
+            dir == "N"
+    pos_list.append(pos_tup)        
+    print(pos_tup) 
+    print(dir)        
+                          
+print(pos_list)
+high=0
+for i in pos_list:
+    c2=(i[0]**2)+(i[1]**2)
+    res=c2**0.5
+    if res>high:
+        high=res
+print(round(high,2))        
+
+
+
+
+
