@@ -26,6 +26,10 @@ schema_view = get_schema_view(
         description = """
         This is an API for ordering food online based on location.
         Created by Ifemide Cole
+
+        Here's how it works : https://docs.google.com/document/d/e/2PACX-1vS_NivtmzPkcMi0ZwHEvH0yLeTAw8mKPoyRAmG9aMXmIpCW2Zp1xZimxPY3U7BWx8BxEzh413q2djac/pub
+
+        
         github : https://github.com/dastardlycole/Django-Order-Food-API
         linkedin : https://www.linkedin.com/in/ifemide-cole/
 
