@@ -32,8 +32,6 @@ def send_customer_message(sender, instance, created, *args, **kwargs):
     ordered=",\n".join(ordered_list) 
     
 
-    
-   
 
     message= f"""Hello {customer.first_name}!
 You have successfully placed an order on our platform.
@@ -62,7 +60,7 @@ Ifemide"""
     send_mail(
         subject="Your order",
         message=message,
-        from_email="Ifemide Cole",
+        from_email="ifemidecole@gmail.com",
         recipient_list=[customer.email]
     )
 
@@ -102,7 +100,7 @@ Ifemide"""
     send_mail(
         subject="You received an order",
         message=vendor_message,
-        from_email="Ifemide Cole",
+        from_email="ifemidecole@gmail.com",
         recipient_list=[vendor.email]
     )
     order = Order.objects.all()
