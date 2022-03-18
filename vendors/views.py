@@ -160,7 +160,7 @@ def menus(request):
             check_in_menu=Menu.objects.filter(user=user, food=food)
             if check_in_menu.exists():
                 data = {
-                    'message' : 'Failed. Food item already in your menu'
+                    'message' : 'Failed. Food item already in your menu.'
                 }
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
             else:
