@@ -44,7 +44,7 @@ def customer_menus(request,vendor_user_id):
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def vendors_by_location(request,location):
-    # get menu of a vendor
+    # get details of vendors by location
     user=request.user
     if request.method == "GET":
         if location == 'my location':
