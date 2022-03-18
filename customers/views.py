@@ -38,13 +38,21 @@ def customer_menus(request,vendor_user_id):
     
         return Response(data, status=status.HTTP_200_OK)
 
+
+@swagger_auto_schema(method='get',operation_description="Options are 'ikoyi', 'lekki', 'vi', 'surulere', 'yaba', 'my location', or 'anywhere'")
 @api_view(['GET'])
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def vendors_by_location(request,location):
     # get menu of a vendor
+    user=request.user
     if request.method == "GET":
-        users = User.objects.filter(location=location, is_vendor=True)
+        if location == 'my location':
+            location=user.location
+        elif location == 'anywhere':
+            users=User.objects.filter(is_vendor=True)
+        else:
+            users = User.objects.filter(location=location, is_vendor=True)
         if users.exists():
             pass
         else:

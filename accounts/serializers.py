@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=255, write_only = True)
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone','first_name', 'last_name', 'password', 'is_vendor', 'is_customer']
+        fields = ['id', 'email', 'phone','first_name', 'last_name', 'password', 'is_vendor', 'is_customer','location']
 
 
 class ResetSerializer(serializers.Serializer):
