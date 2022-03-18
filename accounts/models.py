@@ -9,11 +9,20 @@ from django.utils import timezone
 
 # Create your models here.
 class User(AbstractBaseUser, PermissionsMixin):
+    choices = (
+        ("ikoyi", "Ikoyi"),
+        ("vi", "VI"),
+        ("lekki", "Lekki"),
+        ("surulere", "Surulere"),
+        ("yaba", "Yaba"),
+
+    )
     email = models.EmailField(_('email address'), unique=True)
     phone = models.CharField(_('phone number'), unique=True, max_length=15)
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
+    location = models.CharField(max_length=200,choices=choices, default='ikoyi')
     is_staff = models.BooleanField(_('staff'), default=False)
     is_admin = models.BooleanField(_('admin'), default=False)
     is_superuser = models.BooleanField(_('superuser'), default=False)

@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from vendors.models import Menu, Food
 from .models import Cart, Order
 from django.contrib.auth import get_user_model
+from accounts.serializers import UserSerializer
 from vendors.serializers import MenuSerializer, FoodSerializer
 from .serializers import CartSerializer, OrderSerializer
 from drf_yasg.utils import swagger_auto_schema
@@ -36,6 +37,34 @@ def customer_menus(request,vendor_user_id):
     
     
         return Response(data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def vendors_by_location(request,location):
+    # get menu of a vendor
+    if request.method == "GET":
+        users = User.objects.filter(location=location, is_vendor=True)
+        if users.exists():
+            pass
+        else:
+            data = {
+            'message' : 'failed',
+            'error'  : f"No vendor at {location}"
+        }
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(users, many=True)
+        
+        data = {
+           "message":"successful.",
+           "data": serializer.data
+        }
+    
+    
+        return Response(data, status=status.HTTP_200_OK)
+
+
 
 
 
