@@ -15,22 +15,22 @@ User = get_user_model()
 @api_view(['GET'])
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
-def customer_menus(request,user_id):
-    # user= request.user
+def customer_menus(request,vendor_user_id):
+    # get menu of a vendor
     if request.method == "GET":
-        menu = Menu.objects.filter(user=user_id)
+        menu = Menu.objects.filter(user=vendor_user_id)
         if menu.exists():
             pass
         else:
             data = {
             'message' : 'failed',
-            'error'  : f"Menu does not exist."
+            'error'  : f"Menu created by vendor with user id {vendor_user_id} does not exist."
         }
             return Response(data, status=status.HTTP_404_NOT_FOUND)
         serializer = MenuSerializer(menu, many=True)
         
         data = {
-           "message":"successful",
+           "message":"successful. USE FOOD(DETAIL) ID WHEN ADDING TO CART",
            "data": serializer.data
         }
     
@@ -43,14 +43,17 @@ def customer_menus(request,user_id):
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def get_carts(request):
+    # get customers cart
     user= request.user
     if request.method == "GET":
+        if user.is_customer == False:
+            raise PermissionDenied(detail={"message":f"Permission Denied. Only customers can perform this action"})
         cart = Cart.objects.filter(user=user)
         serializer = CartSerializer(cart, many=True)
         
         data = {
-           "message":"successful",
-           "data": serializer.data
+        "message":"successful",
+        "data": serializer.data
         }
     
     
@@ -61,15 +64,18 @@ def get_carts(request):
 @api_view(['POST'])
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
-def make_carts(request,user_id): 
+def make_carts(request,vendor_user_id): 
+    # add food to cart
     user=request.user  #user creating cart 
+    if user.is_customer==False:
+        raise PermissionDenied(detail={"message":f"Permission Denied. Only customers can perform this action"})
     if request.method == 'POST':
         serializer = CartSerializer(data=request.data)
         if serializer.is_valid(): 
             if "user" in serializer.validated_data.keys():
                 serializer.validated_data.pop("user")  
             food = serializer.validated_data["food"]
-            ven=User.objects.filter(id=user_id)
+            ven=User.objects.filter(id=vendor_user_id)
             if ven.exists():
                 pass
             else:
@@ -78,16 +84,16 @@ def make_carts(request,user_id):
             }
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-            check = Menu.objects.filter(food=food,user=User.objects.get(id=user_id))
+            check = Menu.objects.filter(food=food,user=User.objects.get(id=vendor_user_id))
             if check.exists():
                 pass
             else:
-                raise PermissionDenied(detail={"message":f"Vendor {user_id} does not have this item this item."}) 
+                raise PermissionDenied(detail={"message":f"Vendor {vendor_user_id} does not have this item."}) 
 
             
             if len(Cart.objects.filter(user=user)) != 0:
                 diff_vens=Cart.objects.filter(user=user).first() #checks if the item has a diff vendor from what is already in cart
-                if diff_vens.food.user.id != user_id:
+                if diff_vens.food.user.id != vendor_user_id:
                     data = {
                     'message' : 'Cart can only contain food from one vendor',
                 }
@@ -116,7 +122,10 @@ def make_carts(request,user_id):
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def delete_carts(request,item_id): 
+    # delete individual cart item
     user=request.user  #user creating cart 
+    if user.is_customer == False:
+            raise PermissionDenied(detail={"message":f"Permission Denied. Only customers can perform this action"})
     if request.method == 'DELETE':
         try:
             cart = Cart.objects.get(user=user,id=item_id)
@@ -140,10 +149,17 @@ def delete_carts(request,item_id):
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def create_order(request):
+    # order what's in cart
     user=request.user
+    if user.is_customer == False:
+            raise PermissionDenied(detail={"message":f"Permission Denied. Only customers can perform this action"})
     if request.method == "POST":
     
         cart = Cart.objects.filter(user=user)
+        if cart.exists():
+            pass
+        else:
+            raise PermissionDenied(detail={"message":f"Cart is empty. Add something to your cart to place an order."}) 
         first_serializer = CartSerializer(cart, many=True)
         
         if len(first_serializer.data) == 0:
@@ -189,36 +205,7 @@ def create_order(request):
             }
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
     
-# get all orders and delete all orders not necessary only for super user
-#actually nah we need order history for vendor and customer
-@api_view(['GET'])
-@authentication_classes([BasicAuthentication])
-@permission_classes([IsAuthenticated])
-def get_orders(request):
-    user= request.user
-    if request.method == "GET":
-        order = Order.objects.all()
-        serializer = OrderSerializer(order, many=True)
-        
-        data = {
-           "message":"successful",
-           "data": serializer.data
-        }
-    
-    
-        return Response(data, status=status.HTTP_200_OK)    
-
-@api_view(['DELETE'])
-@authentication_classes([BasicAuthentication])
-@permission_classes([IsAuthenticated])
-def delete_orders(request,): 
-    user=request.user  #user creating cart 
-    if request.method == 'DELETE':
-        order = Order.objects.all()
-        for i in order:
-            i.delete()
-
-        return Response({}, status=status.HTTP_204_NO_CONTENT)    
+   
 
 
 

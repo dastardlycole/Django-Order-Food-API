@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'accounts',
     'vendors',
     'customers.apps.CustomersConfig',
+    'admins.apps.AdminsConfig',
     'rest_framework',
     'drf_yasg',
     'coreapi',
@@ -132,12 +133,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-# DEFAULT_FROM_EMAIL = 'ifemidecole@gmail.com'
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmass.co'
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER',"")
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD',"")
-# EMAIL_PORT = 25 
-# EMAIL_USE_TLS = True  
+DEFAULT_FROM_EMAIL = 'ifemidecole@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmass.co'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER',"")
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD',"")
+EMAIL_PORT = 25 
+EMAIL_USE_TLS = True  
